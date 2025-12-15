@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminServiceController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\CustomerController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Services Management
+    Route::resource('services', AdminServiceController::class);
+    
+    // Orders Management
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+});
+
+// Customer Routes
+Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/services', [CustomerController::class, 'services'])->name('services');
+    Route::post('/orders', [CustomerController::class, 'placeOrder'])->name('placeOrder');
+    Route::get('/orders/{order}', [CustomerController::class, 'showOrder'])->name('orders.show');
+});
+
+require __DIR__.'/auth.php';
