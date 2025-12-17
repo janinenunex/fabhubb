@@ -7,7 +7,13 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\CustomerController;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('customer.dashboard');
+    }
+    return redirect()->route('login');
 });
 
 // Admin Routes
