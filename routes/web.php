@@ -58,7 +58,8 @@ Route::middleware('auth')
         Route::post('/orders', [CustomerController::class, 'placeOrder'])
             ->name('placeOrder');
 
-        Route::get('/orders/{order}', [CustomerController::class, 'showOrder'])
+        // FIXED: Changed 'showOrder' to 'show'
+        Route::get('/orders/{order}', [CustomerController::class, 'show'])
             ->name('orders.show');
     });
 

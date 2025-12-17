@@ -46,10 +46,13 @@ class CustomerController extends Controller
         return redirect()->route('customer.dashboard')->with('success', 'Order placed successfully!');
     }
 
-    public function showOrder(Order $order): View
-    {
-        $this->authorize('view', $order);
-        $order->load(['user', 'service']);
-        return view('customer.orders.show', compact('order'));
+public function show(Order $order)
+{
+    // Only allow the owner of the order to view it
+    if ($order->user_id !== auth()->id()) {
+        abort(403, 'Unauthorized action.');
     }
+
+    return view('customer.orders.show', compact('order'));
+}
 }

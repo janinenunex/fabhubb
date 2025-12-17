@@ -171,10 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('revenueChart'), {
         type: 'line',
         data: {
-            labels: @json($revenueLabels),
+            labels: @json($revenueLabels ?? []),
             datasets: [{
                 label: 'Revenue ($)',
-                data: @json($revenueData),
+                data: @json($revenueData ?? []),
                 borderColor: '#fbbf24',
                 backgroundColor: 'rgba(251, 191, 36, 0.2)',
                 tension: 0.4,
@@ -197,10 +197,10 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('ordersChart'), {
         type: 'bar',
         data: {
-            labels: @json($orderDates),
+            labels: @json($orderDates ?? []),
             datasets: [{
                 label: 'Orders',
-                data: @json($orderCounts),
+                data: @json($orderCounts ?? []),
                 backgroundColor: '#fbbf24'
             }]
         },
