@@ -40,7 +40,7 @@ class CustomerController extends Controller
             'user_id' => auth()->id(),
             'service_id' => $validated['service_id'],
             'quantity' => $validated['quantity'],
-            'status' => 'Pending',
+            'status' => Order::STATUS_PENDING,
         ]);
 
         return redirect()->route('customer.dashboard')->with('success', 'Order placed successfully!');

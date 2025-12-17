@@ -21,14 +21,14 @@ class AdminOrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
-    public function updateStatus(Request $request, Order $order): RedirectResponse
-    {
-        $validated = $request->validate([
-            'status' => 'required|in:Pending,Completed',
-        ]);
+public function updateStatus(Request $request, Order $order): RedirectResponse
+{
+    $validated = $request->validate([
+        'status' => 'required|in:' . implode(',', Order::$statuses),
+    ]);
 
-        $order->update($validated);
+    $order->update($validated);
 
-        return back()->with('success', 'Order status updated successfully.');
-    }
+    return back()->with('success', 'Order status updated to ' . $validated['status']);
+}
 }

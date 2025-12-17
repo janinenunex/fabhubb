@@ -9,25 +9,25 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 dark:bg-gray-900">
+<body class="bg-accent-50 text-gray-900">
     <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
-        <nav class="bg-white dark:bg-gray-800 shadow">
+        <nav class="bg-primary-900 text-white shadow-lg">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold text-blue-600">
+                        <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold text-accent-400">
                             FabHub Admin
                         </a>
                     </div>
 
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('customer.dashboard') }}" class="text-gray-700 dark:text-gray-300 hover:text-blue-600">
+                    <div class="flex items-center gap-6">
+                        <a href="{{ route('customer.dashboard') }}" class="hover:text-accent-300">
                             View as Customer
                         </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" class="text-gray-700 dark:text-gray-300 hover:text-blue-600">
+                            <button type="submit" class="hover:text-accent-300">
                                 Logout
                             </button>
                         </form>
@@ -39,32 +39,31 @@
         <!-- Sidebar & Content -->
         <div class="flex flex-1">
             <!-- Sidebar -->
-            <div class="w-64 bg-white dark:bg-gray-800 shadow">
-                <nav class="p-4 space-y-2">
-                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+            <div class="w-64 bg-primary-900 text-white shadow-lg">
+                <nav class="p-4 space-y-1">
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-accent-400 text-primary-900 font-semibold' : 'hover:bg-accent-600' }}">
                         Dashboard
                     </a>
-                    <a href="{{ route('admin.services.index') }}" class="block px-4 py-2 rounded-lg {{ request()->routeIs('admin.services.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                    <a href="{{ route('admin.services.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('admin.services.*') ? 'bg-accent-400 text-primary-900 font-semibold' : 'hover:bg-accent-600' }}">
                         Services
                     </a>
-                    <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 rounded-lg {{ request()->routeIs('admin.orders.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                    <a href="{{ route('admin.orders.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('admin.orders.*') ? 'bg-accent-400 text-primary-900 font-semibold' : 'hover:bg-accent-600' }}">
                         Orders
                     </a>
                 </nav>
             </div>
 
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <!-- Flash Messages -->
+            <div class="flex-1 p-8 bg-accent-50">
                 @if ($message = Session::get('success'))
-                    <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    <div class="mb-6 p-4 bg-success-100 border border-success-300 text-success-700 rounded-lg">
                         {{ $message }}
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
-                        <ul>
+                    <div class="mb-6 p-4 bg-danger-100 border border-danger-300 text-danger-700 rounded-lg">
+                        <ul class="list-disc pl-5">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach

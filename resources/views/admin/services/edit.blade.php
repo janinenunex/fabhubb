@@ -4,47 +4,80 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Service</h1>
-    <p class="text-gray-600 dark:text-gray-400 mt-2">Update service details.</p>
+    <h1 class="text-4xl font-bold text-primary-900">Edit Service</h1>
+    <p class="text-gray-500 mt-2">Update service details.</p>
 </div>
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-2xl">
-    <form action="{{ route('admin.services.update', $service) }}" method="POST">
-        @csrf
-        @method('PUT')
+<div class="max-w-2xl">
+    <div class="bg-accent-50 rounded-lg shadow-lg p-8">
+        <form action="{{ route('admin.services.update', $service) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-        <div class="mb-6">
-            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Name</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $service->name) }}" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>
-            @error('name')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+            <div class="mb-8">
+                <label for="name" class="block text-sm font-medium text-accent-400 mb-2">Service Name</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    value="{{ old('name', $service->name) }}" 
+                    class="w-full px-5 py-4 bg-accent-100 border border-accent-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent" 
+                    placeholder="e.g. 3D Printing"
+                    required
+                >
+                @error('name')
+                    <p class="text-danger-600 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <div class="mb-6">
-            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
-            <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>{{ old('description', $service->description) }}</textarea>
-            @error('description')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+            <div class="mb-8">
+                <label for="description" class="block text-sm font-medium text-accent-400 mb-2">Description</label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="6" 
+                    class="w-full px-5 py-4 bg-accent-100 border border-accent-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent resize-none" 
+                    placeholder="Describe the service in detail..."
+                    required
+                >{{ old('description', $service->description) }}</textarea>
+                @error('description')
+                    <p class="text-danger-600 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <div class="mb-6">
-            <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price per Unit</label>
-            <input type="number" id="price" name="price" value="{{ old('price', $service->price) }}" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" required>
-            @error('price')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+            <div class="mb-10">
+                <label for="price" class="block text-sm font-medium text-accent-400 mb-2">Price per Unit</label>
+                <input 
+                    type="number" 
+                    id="price" 
+                    name="price" 
+                    value="{{ old('price', $service->price) }}" 
+                    step="0.01" 
+                    min="0" 
+                    class="w-full px-5 py-4 bg-accent-100 border border-accent-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent" 
+                    placeholder="0.00"
+                    required
+                >
+                @error('price')
+                    <p class="text-danger-600 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <div class="flex gap-4">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
-                Update Service
-            </button>
-            <a href="{{ route('admin.services.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg">
-                Cancel
-            </a>
-        </div>
-    </form>
+            <div class="flex gap-4">
+                <button 
+                    type="submit" 
+                    class="bg-accent-400 hover:bg-accent-500 text-primary-900 font-bold py-3 px-8 rounded-lg transition shadow-lg"
+                >
+                    Update Service
+                </button>
+                <a 
+                    href="{{ route('admin.services.index') }}" 
+                    class="bg-primary-300 hover:bg-primary-400 text-primary-900 font-bold py-3 px-8 rounded-lg transition shadow-lg"
+                >
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection

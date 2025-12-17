@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Login - FabHub</title>
+    <title>Login - CTU FabLab</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -88,19 +88,20 @@
         .form-label { font-size: 12px; letter-spacing: 0.5px; color: rgba(7,33,58,0.65); }
     </style>
 </head>
-<body>
-    <div class="d-flex align-items-center justify-content-center min-vh-100 px-2 py-4">
-        <div class="card login-card" style="width:100%;max-width:900px;">
-            <div class="row g-0">
-                <!-- Form Column -->
-                <div class="col-md-6 p-5">
-                    <h2 class="fw-bold mb-2">Welcome Back</h2>
-                    <p class="text-muted mb-4">Sign in to your CTU FabLab account</p>
+<body class="bg-primary-900 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-3xl"> <!-- Reduced from max-w-4xl -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+            <!-- Left: Login Form - reduced padding -->
+            <div class="w-full md:w-1/2 p-8"> <!-- Reduced from p-12 -->
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-primary-900">Welcome Back</h1>
+                    <p class="text-primary-600 mt-2 text-sm">Sign in to your CTU FabLab account</p>
+                </div>
 
                 @if ($errors->any())
-                    <div class="mb-3 alert alert-danger alert-dismissible fade show" role="alert">
-                        <ul class="mb-0">
-                            @foreach($errors->all() as $error)
+                    <div class="mb-5 p-3 bg-danger-100 border border-danger-300 text-danger-700 rounded-lg text-sm">
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
@@ -108,40 +109,62 @@
                     </div>
                 @endif
 
-                <form action="{{ route('login.post') }}" method="POST">
+                <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                     @csrf
-                    <div class="mb-4">
-                        <label for="email" class="form-label fw-bold text-uppercase">✉ Email Address</label>
-                        <input type="email" class="form-control form-control-lg" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email address" required>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-primary-700 mb-1.5">
+                            Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value="{{ old('email') }}"
+                            class="w-full px-4 py-3 bg-gray-50 border border-primary-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Enter your email address"
+                            required
+                        >
                     </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label fw-bold text-uppercase">🔒 Password</label>
-                        <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Enter your password" required>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-primary-700 mb-1.5">
+                            Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            class="w-full px-4 py-3 bg-gray-50 border border-primary-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Enter your password"
+                            required
+                        >
                     </div>
-                    <div class="mb-4 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="remember" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                            <span class="ml-2 text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-primary-600 hover:text-primary-700">Forgot password?</a>
                     </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-signin btn-lg text-white">
-                            ➜ SIGN IN
-                        </button>
-                    </div>
+
+                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3.5 px-6 rounded-lg transition shadow-md flex items-center justify-center">
+                        Sign In
+                    </button>
+
+                    <p class="text-center text-sm text-gray-600 mt-5">
+                        Don't have an account? 
+                        <a href="{{ route('register') }}" class="text-primary-600 hover:text-primary-700 font-semibold">Create Account</a>
+                    </p>
                 </form>
+            </div>
 
-                <div class="text-center mt-4">
-                    <p class="text-dark">Don't have an account? <a href="{{ route('register') }}" class="text-primary fw-bold text-decoration-none">Create Account</a></p>
-                </div>
-                </div>
-
-                <!-- Logo Column -->
-                <div class="col-md-6 logo-section d-flex flex-column align-items-center justify-content-center p-5">
-                    <div class="text-center">
-                        <!-- Image Logo -->
-                        <img src="{{ asset('images/fablab-logo.jpg') }}" alt="CTU DANAO" class="img-fluid mb-4 rounded shadow-lg">
-                        
-                        
-                    </div>
+            <!-- Right: Logo & Branding -->
+            <div class="hidden md:flex w-full md:w-1/2 bg-white items-center justify-center p-8">
+                <div class="text-center">
+                    <img src="{{ asset('images/ctu-fablab-logo.png') }}" alt="CTU Danao FabLab Logo" class="w-48 mx-auto mb-6">
+                    <h2 class="text-3xl font-bold text-primary-900">CTU DANAO</h2>
                 </div>
             </div>
         </div>
