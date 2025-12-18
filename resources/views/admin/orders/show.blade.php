@@ -23,14 +23,6 @@
                     <p class="text-xl font-semibold">{{ $order->user->email }}</p>
                 </div>
                     <div>
-                        <p class="text-primary-300 text-sm">Contact Name</p>
-                        <p class="text-xl font-semibold">{{ $order->contact_name ?? $order->user->name }}</p>
-                    </div>
-                    <div>
-                        <p class="text-primary-300 text-sm">Contact Email</p>
-                        <p class="text-xl font-semibold">{{ $order->contact_email ?? $order->user->email }}</p>
-                    </div>
-                    <div>
                         <p class="text-primary-300 text-sm">Contact Phone</p>
                         <p class="text-xl font-semibold">{{ $order->contact_phone ?? '—' }}</p>
                     </div>

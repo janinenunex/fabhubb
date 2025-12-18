@@ -90,45 +90,66 @@
 @endif
 
 <!-- Request Service Modal -->
-<div id="requestServiceModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg w-full max-w-4xl mx-4 overflow-hidden">
-        <div class="flex items-center justify-between p-4 border-b">
-            <h3 id="modalTitle" class="text-lg font-semibold">Request Service</h3>
-            <button id="closeModal" class="text-gray-600 hover:text-gray-900">✕</button>
-        </div>
+<div id="requestServiceModal" class="fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-50 z-50">
+    <div class="w-full max-w-4xl mx-4">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b border-primary-800 bg-primary-900">
+                <h3 id="modalTitle" class="text-xl font-bold text-white">Request Service</h3>
+                <button id="closeModal" class="text-white hover:text-primary-200">✕</button>
+            </div>
 
-        <form id="requestForm" method="POST" action="{{ route('customer.placeOrder') }}" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" name="service_id" id="modal_service_id" value="">
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-3">
-                    <label class="block text-sm font-medium">Name</label>
-                    <input required name="name" value="{{ auth()->user()->name ?? '' }}" class="w-full border rounded px-3 py-2" />
+            <form id="requestForm" method="POST" action="{{ route('customer.placeOrder') }}" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="service_id" id="modal_service_id" value="">
+                <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Service Info (small card to match site) -->
+                    <div class="lg:col-span-1 bg-accent-50 rounded-lg p-4">
+                        <h4 id="modalServiceName" class="text-lg font-semibold text-primary-900 mb-2">Service</h4>
+                        <p class="text-gray-700 text-sm">Select the quantity, attach files (SVG/PDF/PNG), and add notes if needed. Contact details are pre-filled.</p>
+                    </div>
 
-                    <label class="block text-sm font-medium">Email</label>
-                    <input required name="email" type="email" value="{{ auth()->user()->email ?? '' }}" class="w-full border rounded px-3 py-2" />
+                    <!-- Right: Form fields -->
+                    <div class="lg:col-span-2 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Name</label>
+                                <input required name="name" value="{{ auth()->user()->name ?? '' }}" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
+                            </div>
 
-                    <label class="block text-sm font-medium">Phone</label>
-                    <input required name="phone" class="w-full border rounded px-3 py-2" />
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input required name="email" type="email" value="{{ auth()->user()->email ?? '' }}" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
+                            </div>
 
-                    <label class="block text-sm font-medium">Quantity</label>
-                    <input required name="quantity" type="number" min="1" value="1" class="w-24 border rounded px-3 py-2" />
-                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Phone</label>
+                                <input required name="phone" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
+                            </div>
 
-                <div class="space-y-3">
-                    <label class="block text-sm font-medium">Upload Files</label>
-                    <input name="files[]" type="file" accept=".svg,.pdf,.png,.jpeg,.jpg" multiple class="w-full" />
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Quantity</label>
+                                <input required name="quantity" type="number" min="1" value="1" class="mt-1 block w-32 border rounded-lg px-3 py-2 bg-white" />
+                            </div>
+                        </div>
 
-                    <label class="block text-sm font-medium">Notes (optional)</label>
-                    <textarea name="notes" rows="5" class="w-full border rounded px-3 py-2"></textarea>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700">Upload Files</label>
+                            <input name="files[]" type="file" accept=".svg,.pdf,.png,.jpeg,.jpg" multiple class="mt-2 block w-full" />
+                        </div>
 
-                    <div class="flex items-center justify-end gap-3 mt-2">
-                        <button type="button" id="modalCancel" class="px-4 py-2 border rounded">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-primary-900 text-white rounded">Submit Request</button>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700">Notes (optional)</label>
+                            <textarea name="notes" rows="4" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white"></textarea>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-3">
+                            <button type="button" id="modalCancel" class="px-4 py-2 border rounded-lg">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-primary-900 text-white rounded-lg">Submit Request</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -140,10 +161,12 @@
         const cancel = document.getElementById('modalCancel');
         const modalServiceId = document.getElementById('modal_service_id');
         const modalTitle = document.getElementById('modalTitle');
+        const modalServiceName = document.getElementById('modalServiceName');
 
         function openModal(serviceId, serviceName){
             modalServiceId.value = serviceId;
-            modalTitle.textContent = 'Request ' + serviceName;
+            modalTitle.textContent = 'Request Service';
+            modalServiceName.textContent = serviceName;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
