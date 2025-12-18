@@ -97,7 +97,9 @@
     <!-- Order Status Distribution (Donut Chart) -->
     <div class="bg-primary-800 rounded-xl shadow-xl p-6">
         <h2 class="text-xl font-bold text-white mb-4">Order Status Distribution</h2>
-        <canvas id="statusChart" height="150"></canvas>
+        <div style="position: relative; height: 350px;">
+            <canvas id="statusChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -292,27 +294,84 @@ document.addEventListener('DOMContentLoaded', function () {
             new window.Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Pending', 'Processing', 'Completed', 'Cancelled'],
+                    labels: ['Pending', 'Processing', 'Ready for Pickup', 'Completed'],
                     datasets: [{
-                        data: [statusData.Pending ?? 0, statusData.Processing ?? 0, statusData.Completed ?? 0, statusData.Cancelled ?? 0],
+                        data: [
+                            statusData.pending ?? 0,
+                            statusData.processing ?? 0,
+                            statusData.ready_for_pickup ?? 0,
+                            statusData.completed ?? 0
+                        ],
                         backgroundColor: [
                             '#fbbf24', // Pending - Yellow
                             '#3b82f6', // Processing - Blue
-                            '#10b981', // Completed - Green
-                            '#ef4444'  // Cancelled - Red
+                            '#a855f7', // Ready for Pickup - Purple
+                            '#10b981'  // Completed - Green
                         ],
                         borderColor: '#1e293b',
-                        borderWidth: 2
+                        borderWidth: 3,
+                        hoverBorderWidth: 4
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: { color: '#e0e0e0', padding: 20 }
+                            labels: {
+                                color: '#e0e0e0',
+                                padding: 15,
+                                font: {
+                                    size: 13,
+                                    weight: '500'
+                                },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        return data.labels.map((label, i) => {
+                                            const value = data.datasets[0].data[i];
+                                            return {
+                                                text: label + ': ' + value,
+                                                fillStyle: data.datasets[0].backgroundColor[i],
+                                                strokeStyle: data.datasets[0].borderColor,
+                                                lineWidth: data.datasets[0].borderWidth,
+                                                hidden: false,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                    return [];
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return label + ': ' + value + ' (' + percentage + '%)';
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1000
                     }
                 }
             });

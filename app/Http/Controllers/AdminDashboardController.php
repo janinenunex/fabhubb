@@ -15,8 +15,8 @@ class AdminDashboardController extends Controller
 public function index(): View
 {
     $totalOrders = Order::count();
-    $pendingOrders = Order::where('status', 'Pending')->count();
-    $completedOrders = Order::where('status', 'Completed')->count();
+    $pendingOrders = Order::where('status', Order::STATUS_PENDING)->count();
+    $completedOrders = Order::where('status', Order::STATUS_COMPLETED)->count();
     $totalUsers = User::where('role', 'customer')->count();
     $allServices = Service::all(); // or however your friend fetches all services
     $recentUsers = User::latest()->limit(5)->get();
@@ -69,6 +69,14 @@ public function index(): View
         $orderCounts[] = $count;
     }
 
+    // Order Status Distribution for Donut Chart
+    $statusDistribution = [
+        'pending' => Order::where('status', Order::STATUS_PENDING)->count(),
+        'processing' => Order::where('status', Order::STATUS_PROCESSING)->count(),
+        'ready_for_pickup' => Order::where('status', Order::STATUS_READY)->count(),
+        'completed' => Order::where('status', Order::STATUS_COMPLETED)->count(),
+    ];
+
     return view('admin.dashboard', [
         'totalOrders' => $totalOrders,
         'pendingOrders' => $pendingOrders,
@@ -82,6 +90,7 @@ public function index(): View
         'orderCounts' => $orderCounts,
         'allServices' => $allServices,
         'recentUsers' => $recentUsers,
+        'statusDistribution' => $statusDistribution,
     ]);
 }
 

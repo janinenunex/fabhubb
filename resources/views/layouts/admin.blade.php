@@ -12,23 +12,34 @@
 <body class="bg-accent-50 text-gray-900">
     <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
-        <nav class="bg-primary-900 text-white shadow-lg">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold text-accent-400">
-                            FabHub Admin
+        <nav class="bg-primary-900 text-white shadow-xl border-b border-primary-700">
+            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 text-2xl font-bold text-accent-400 hover:text-accent-300 transition-colors duration-200">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            <span>FabHub Admin</span>
                         </a>
                     </div>
 
-                    <div class="flex items-center gap-6">
-                        <a href="{{ route('customer.dashboard') }}" class="hover:text-accent-300">
-                            View as Customer
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('customer.dashboard') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-primary-800 hover:text-white transition-all duration-200 group">
+                            <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <span>View as Customer</span>
                         </a>
+                        <div class="h-6 w-px bg-primary-700"></div>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" class="hover:text-accent-300">
-                                Logout
+                            <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-red-600 hover:text-white transition-all duration-200 group">
+                                <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                <span>Logout</span>
                             </button>
                         </form>
                     </div>
