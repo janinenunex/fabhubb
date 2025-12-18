@@ -57,9 +57,12 @@ class AdminServiceController extends Controller
             'status' => 'nullable|in:Available,Unavailable',
         ]);
 
-        if (empty($validated['status'])) {
-            // keep existing status if present, otherwise mark Unavailable
-            $validated['status'] = $service->status ?? 'Unavailable';
+        // If the checkbox was present in the request set that value, otherwise mark as Unavailable
+        // (checkbox inputs are omitted when unchecked)
+        if ($request->has('status')) {
+            $validated['status'] = $request->input('status');
+        } else {
+            $validated['status'] = 'Unavailable';
         }
 
         $service->update($validated);

@@ -3,7 +3,7 @@
 @section('title', 'Edit Service')
 
 @section('content')
-<div id="editServiceModalBackdrop" class="fixed inset-0 flex items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50">
+<div id="editServiceModalBackdrop" class="fixed inset-0 flex items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50" style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background-color: rgba(255,255,255,0.6);">
     <div class="w-full max-w-3xl mx-4">
         <div class="bg-white rounded-xl shadow-xl overflow-hidden">
             <div class="p-6 border-b bg-primary-900">

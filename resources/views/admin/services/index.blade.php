@@ -65,7 +65,10 @@
         // Edit modal logic
         const editModal = document.createElement('div');
         editModal.id = 'editServiceModal';
-        editModal.className = 'fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50';
+        // white translucent overlay with blur so page behind modal appears white and blurred
+        editModal.className = 'fixed inset-0 hidden items-center justify-center bg-white bg-opacity-60 backdrop-blur-md z-50';
+        // ensure blur fallback even if Tailwind utilities are not generated
+        editModal.style.cssText += 'backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background-color: rgba(255,255,255,0.6);';
         editModal.innerHTML = `
             <div class="w-full max-w-3xl mx-4">
                 <div class="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -76,7 +79,7 @@
                     </div>
                     <form id="editServiceForm">
                         <input type="hidden" name="_method" value="PUT">
-                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Service Name</label>
                                 <input name="name" id="edit_name" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" required />
@@ -97,6 +100,12 @@
                                 <label class="block text-sm font-medium text-gray-700">Materials</label>
                                 <input name="materials" id="edit_materials" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
                             </div>
+                                <div class="md:col-span-2 mt-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="status" id="edit_status" value="Available" class="form-checkbox h-5 w-5 text-accent-400">
+                                        <span class="ml-2 text-sm text-gray-700">Service Available</span>
+                                    </label>
+                                </div>
                         </div>
                         <div class="p-6 border-t flex items-center justify-end gap-4">
                             <button type="button" id="cancelEditService" class="px-4 py-2 border rounded-lg">Cancel</button>
@@ -130,6 +139,9 @@
                 document.getElementById('edit_price').value = tr.dataset.servicePrice || '';
                 document.getElementById('edit_materials').value = tr.dataset.serviceMaterials || '';
                 document.getElementById('edit_file_formats').value = tr.dataset.serviceFileFormats || '';
+                // set checkbox state from row dataset
+                const statusCheckbox = document.getElementById('edit_status');
+                if (statusCheckbox) statusCheckbox.checked = (tr.dataset.serviceStatus === 'Available');
                 // store id on form element
                 const form = document.getElementById('editServiceForm');
                 form.dataset.serviceId = id;
@@ -173,6 +185,15 @@
                         tr.querySelector('.service-description').textContent = desc.length > 100 ? desc.substring(0,97) + '...' : desc;
                         tr.querySelector('.service-price').innerHTML = '$' + parseFloat(document.getElementById('edit_price').value).toFixed(2) + ' <span class="text-sm text-gray-500">per unit</span>';
                         tr.querySelector('.service-materials').innerHTML = document.getElementById('edit_materials').value ? `<span class="text-sm">${document.getElementById('edit_materials').value}</span>` : '<span class="text-gray-500 italic">No materials specified</span>';
+
+                        // update status badge based on checkbox
+                        const isAvailable = document.getElementById('edit_status').checked;
+                        const statusCell = tr.querySelector('.service-status');
+                        if (statusCell) {
+                            statusCell.innerHTML = `<span class="px-4 py-2 text-sm font-bold rounded-full ${isAvailable ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">${isAvailable ? 'Available' : 'Unavailable'}</span>`;
+                        }
+                        // update dataset flag
+                        tr.dataset.serviceStatus = isAvailable ? 'Available' : 'Unavailable';
                     }
 
                     hideEditModal();
