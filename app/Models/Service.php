@@ -15,12 +15,14 @@ class Service extends Model
         'price',
         'status',      // new: Available or Unavailable
         'materials',   // new: comma-separated list e.g. "PLA, ABS, PETG"
+        'file_formats',
     ];
 
     // Default values
     protected $attributes = [
         'status' => 'Available',
         'materials' => '',
+        'file_formats' => '',
     ];
 
     // Helper for badge color

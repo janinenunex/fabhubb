@@ -8,9 +8,9 @@
         <h1 class="text-4xl font-bold text-primary-900">Service Management</h1>
         <p class="text-gray-500 mt-2">Manage your fabrication lab services</p>
     </div>
-    <a href="{{ route('admin.services.create') }}" class="bg-accent-400 hover:bg-accent-500 text-primary-900 font-bold py-3 px-6 rounded-lg transition shadow-lg">
+    <button id="openAddService" class="bg-accent-400 hover:bg-accent-500 text-primary-900 font-bold py-3 px-6 rounded-lg transition shadow-lg">
         + Add New Service
-    </a>
+    </button>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -57,6 +57,208 @@
         </div>
     </div>
 </div>
+<!-- Add New Service Modal -->
+<div id="addServiceModal" class="fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50">
+    <div class="w-full max-w-3xl mx-4">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b bg-primary-900">
+                <h2 class="text-2xl font-bold text-white">Add New Service</h2>
+                <p class="text-primary-200 text-sm mt-1">Create a new fabrication service</p>
+                <button id="closeAddService" class="absolute right-6 top-6 text-white">✕</button>
+            </div>
+
+            <form action="{{ route('admin.services.store') }}" method="POST">
+                @csrf
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Service Name</label>
+                        <input name="name" placeholder="e.g., 3D Printing" class="mt-1 block w-full border rounded-lg px-3 py-2" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Price</label>
+                        <input name="price" type="number" step="0.01" min="0" placeholder="0.00" class="mt-1 block w-full border rounded-lg px-3 py-2" />
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="description" rows="4" placeholder="Describe the service and what it offers..." class="mt-1 block w-full border rounded-lg px-3 py-2"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Supported File Formats</label>
+                        <input name="file_formats" placeholder="e.g., STL, OBJ, 3MF" class="mt-1 block w-full border rounded-lg px-3 py-2" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Materials</label>
+                        <input name="materials" placeholder="e.g., PLA, ABS, PETG" class="mt-1 block w-full border rounded-lg px-3 py-2" />
+                    </div>
+                </div>
+
+                <div class="p-6 border-t flex items-center justify-end gap-4">
+                    <button type="button" id="cancelAddService" class="px-4 py-2 border rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-yellow-400 text-primary-900 rounded-lg font-bold">+ Create Service</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    (function(){
+        const modal = document.getElementById('addServiceModal');
+        const open = document.getElementById('openAddService');
+        const close = document.getElementById('closeAddService');
+        const cancel = document.getElementById('cancelAddService');
+
+        function openModal(){
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        function closeModal(){
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        open.addEventListener('click', openModal);
+        close.addEventListener('click', closeModal);
+        cancel.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', function(e){
+            if (e.target === modal) closeModal();
+        });
+    })();
+</script>
+@endpush
+
+@push('scripts')
+<script>
+    (function(){
+        // Edit modal logic
+        const editModal = document.createElement('div');
+        editModal.id = 'editServiceModal';
+        editModal.className = 'fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50';
+        editModal.innerHTML = `
+            <div class="w-full max-w-3xl mx-4">
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                    <div class="p-6 border-b bg-primary-900">
+                        <h2 class="text-2xl font-bold text-white">Edit Service</h2>
+                        <p class="text-primary-200 text-sm mt-1">Update service details</p>
+                        <button id="closeEditModal" class="absolute right-6 top-6 text-white">✕</button>
+                    </div>
+                    <form id="editServiceForm">
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Service Name</label>
+                                <input name="name" id="edit_name" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" required />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Price</label>
+                                <input name="price" id="edit_price" type="number" step="0.01" min="0" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" required />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea name="description" id="edit_description" rows="3" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white resize-none" required></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Supported File Formats</label>
+                                <input name="file_formats" id="edit_file_formats" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Materials</label>
+                                <input name="materials" id="edit_materials" class="mt-1 block w-full border rounded-lg px-3 py-2 bg-white" />
+                            </div>
+                        </div>
+                        <div class="p-6 border-t flex items-center justify-end gap-4">
+                            <button type="button" id="cancelEditService" class="px-4 py-2 border rounded-lg">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-yellow-400 text-primary-900 rounded-lg font-bold">Update Service</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(editModal);
+
+        const openButtons = document.querySelectorAll('.open-edit-modal');
+        const closeBtn = () => document.getElementById('closeEditModal');
+
+        function showEditModal(){
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
+        }
+        function hideEditModal(){
+            editModal.classList.add('hidden');
+            editModal.classList.remove('flex');
+        }
+
+        openButtons.forEach(btn => {
+            btn.addEventListener('click', function(){
+                const tr = this.closest('tr');
+                const id = tr.dataset.serviceId;
+                // populate form
+                document.getElementById('edit_name').value = tr.dataset.serviceName || '';
+                document.getElementById('edit_description').value = tr.dataset.serviceDescription || '';
+                document.getElementById('edit_price').value = tr.dataset.servicePrice || '';
+                document.getElementById('edit_materials').value = tr.dataset.serviceMaterials || '';
+                document.getElementById('edit_file_formats').value = tr.dataset.serviceFileFormats || '';
+                // store id on form element
+                const form = document.getElementById('editServiceForm');
+                form.dataset.serviceId = id;
+                showEditModal();
+            });
+        });
+
+        document.addEventListener('click', function(e){
+            if (e.target && e.target.id === 'closeEditModal') hideEditModal();
+            if (e.target && e.target.id === 'cancelEditService') hideEditModal();
+        });
+
+        // Submit via fetch
+        document.getElementById('editServiceForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const form = e.target;
+            const id = form.dataset.serviceId;
+            if (!id) return;
+
+            const url = `/admin/services/${id}`;
+            const data = new FormData(form);
+            // include CSRF
+            data.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+            fetch(url, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.json().catch(() => r.text()))
+                .then(res => {
+                    // on success, update the row in table
+                    const tr = document.querySelector(`tr[data-service-id="${id}"]`);
+                    if (tr) {
+                        // update dataset
+                        tr.dataset.serviceName = document.getElementById('edit_name').value;
+                        tr.dataset.serviceDescription = document.getElementById('edit_description').value;
+                        tr.dataset.servicePrice = document.getElementById('edit_price').value;
+                        tr.dataset.serviceMaterials = document.getElementById('edit_materials').value;
+                        tr.dataset.serviceFileFormats = document.getElementById('edit_file_formats').value;
+
+                        // update visible cells
+                        tr.querySelector('.service-name').textContent = document.getElementById('edit_name').value;
+                        const desc = document.getElementById('edit_description').value;
+                        tr.querySelector('.service-description').textContent = desc.length > 100 ? desc.substring(0,97) + '...' : desc;
+                        tr.querySelector('.service-price').innerHTML = '$' + parseFloat(document.getElementById('edit_price').value).toFixed(2) + ' <span class="text-sm text-gray-500">per unit</span>';
+                        tr.querySelector('.service-materials').innerHTML = document.getElementById('edit_materials').value ? `<span class="text-sm">${document.getElementById('edit_materials').value}</span>` : '<span class="text-gray-500 italic">No materials specified</span>';
+                    }
+
+                    hideEditModal();
+                })
+                .catch(err => {
+                    console.error('Update failed', err);
+                    alert('Update failed. Check console for details.');
+                });
+        });
+    })();
+</script>
+@endpush
 
 <!-- Services Table -->
 <div class="mt-12 bg-white rounded-xl shadow-xl overflow-hidden"> <!-- White outer box -->
@@ -77,28 +279,28 @@
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white"> <!-- White/light rows -->
             @forelse ($services as $service)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium text-gray-900">{{ $service->name }}</td>
-                    <td class="px-6 py-4 text-gray-700 max-w-md">{{ Str::limit($service->description, 100) }}</td>
-                    <td class="px-6 py-4 font-semibold text-accent-400">${{ number_format($service->price, 2) }} <span class="text-sm text-gray-500">per unit</span></td>
-                    <td class="px-6 py-4 text-gray-700">
+                <tr class="hover:bg-gray-50" data-service-id="{{ $service->id }}" data-service-name="{{ e($service->name) }}" data-service-description="{{ e($service->description) }}" data-service-price="{{ $service->price }}" data-service-materials="{{ e($service->materials) }}" data-service-file-formats="{{ e($service->file_formats ?? '') }}" data-service-status="{{ $service->status }}">
+                    <td class="px-6 py-4 font-medium text-gray-900 service-name">{{ $service->name }}</td>
+                    <td class="px-6 py-4 text-gray-700 max-w-md service-description">{{ Str::limit($service->description, 100) }}</td>
+                    <td class="px-6 py-4 font-semibold text-accent-400 service-price">${{ number_format($service->price, 2) }} <span class="text-sm text-gray-500">per unit</span></td>
+                    <td class="px-6 py-4 text-gray-700 service-materials">
                         @if($service->materials)
                             <span class="text-sm">{{ $service->materials }}</span>
                         @else
                             <span class="text-gray-500 italic">No materials specified</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 service-status">
                         <span class="px-4 py-2 text-sm font-bold rounded-full {{ $service->getStatusBadgeClass() }}">
                             {{ $service->status }}
                         </span>
                     </td>
                     <td class="px-6 py-4 space-x-3">
-                        <a href="{{ route('admin.services.edit', $service) }}" class="text-accent-400 hover:text-accent-300">
+                        <button type="button" class="open-edit-modal text-accent-400 hover:text-accent-300" title="Edit" data-service-id="{{ $service->id }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
-                        </a>
+                        </button>
                         <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
