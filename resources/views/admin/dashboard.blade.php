@@ -151,13 +151,13 @@
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
                 @forelse($allServices as $service)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-2 font-medium text-gray-900">{{ $service->name }}</td>
-                        <td class="px-4 py-2">
-                            <span class="inline-block px-2 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Available</span>
-                        </td>
-                        <td class="px-4 py-2 font-semibold text-gray-900">${{ number_format($service->price ?? 0, 2) }}</td>
-                    </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-2 font-medium text-gray-900">{{ $service->name }}</td>
+                            <td class="px-4 py-2">
+                                <span class="inline-block px-4 py-2 text-sm font-bold rounded-full {{ $service->getStatusBadgeClass() }}">{{ $service->status }}</span>
+                            </td>
+                            <td class="px-4 py-2 font-semibold text-gray-900">${{ number_format($service->price ?? 0, 2) }}</td>
+                        </tr>
                 @empty
                     <tr>
                         <td colspan="3" class="px-4 py-2 text-center text-gray-400">No services available</td>

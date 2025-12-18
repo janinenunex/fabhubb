@@ -8,9 +8,9 @@
         <h1 class="text-4xl font-bold text-primary-900">Service Management</h1>
         <p class="text-gray-500 mt-2">Manage your fabrication lab services</p>
     </div>
-    <button id="openAddService" class="bg-accent-400 hover:bg-accent-500 text-primary-900 font-bold py-3 px-6 rounded-lg transition shadow-lg">
+    <a href="{{ route('admin.services.create') }}" class="bg-accent-400 hover:bg-accent-500 text-primary-900 font-bold py-3 px-6 rounded-lg transition shadow-lg inline-block">
         + Add New Service
-    </button>
+    </a>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -57,81 +57,7 @@
         </div>
     </div>
 </div>
-<!-- Add New Service Modal -->
-<div id="addServiceModal" class="fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-40 backdrop-blur-sm z-50">
-    <div class="w-full max-w-3xl mx-4">
-        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b bg-primary-900">
-                <h2 class="text-2xl font-bold text-white">Add New Service</h2>
-                <p class="text-primary-200 text-sm mt-1">Create a new fabrication service</p>
-                <button id="closeAddService" class="absolute right-6 top-6 text-white">✕</button>
-            </div>
-
-            <form action="{{ route('admin.services.store') }}" method="POST">
-                @csrf
-                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Service Name</label>
-                        <input name="name" placeholder="e.g., 3D Printing" class="mt-1 block w-full border rounded-lg px-3 py-2" />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Price</label>
-                        <input name="price" type="number" step="0.01" min="0" placeholder="0.00" class="mt-1 block w-full border rounded-lg px-3 py-2" />
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea name="description" rows="4" placeholder="Describe the service and what it offers..." class="mt-1 block w-full border rounded-lg px-3 py-2"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Supported File Formats</label>
-                        <input name="file_formats" placeholder="e.g., STL, OBJ, 3MF" class="mt-1 block w-full border rounded-lg px-3 py-2" />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Materials</label>
-                        <input name="materials" placeholder="e.g., PLA, ABS, PETG" class="mt-1 block w-full border rounded-lg px-3 py-2" />
-                    </div>
-                </div>
-
-                <div class="p-6 border-t flex items-center justify-end gap-4">
-                    <button type="button" id="cancelAddService" class="px-4 py-2 border rounded-lg">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-yellow-400 text-primary-900 rounded-lg font-bold">+ Create Service</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-    (function(){
-        const modal = document.getElementById('addServiceModal');
-        const open = document.getElementById('openAddService');
-        const close = document.getElementById('closeAddService');
-        const cancel = document.getElementById('cancelAddService');
-
-        function openModal(){
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-        function closeModal(){
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        open.addEventListener('click', openModal);
-        close.addEventListener('click', closeModal);
-        cancel.addEventListener('click', closeModal);
-
-        modal.addEventListener('click', function(e){
-            if (e.target === modal) closeModal();
-        });
-    })();
-</script>
-@endpush
+<!-- Add New Service is a dedicated page (no modal) -->
 
 @push('scripts')
 <script>

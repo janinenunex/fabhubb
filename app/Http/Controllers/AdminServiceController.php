@@ -31,9 +31,9 @@ class AdminServiceController extends Controller
             'status' => 'nullable|in:Available,Unavailable',
         ]);
 
-        // Ensure default status is set if not provided
+        // If the checkbox isn't present (unchecked), treat as Unavailable
         if (empty($validated['status'])) {
-            $validated['status'] = 'Available';
+            $validated['status'] = 'Unavailable';
         }
 
         Service::create($validated);
@@ -58,7 +58,8 @@ class AdminServiceController extends Controller
         ]);
 
         if (empty($validated['status'])) {
-            $validated['status'] = $service->status ?? 'Available';
+            // keep existing status if present, otherwise mark Unavailable
+            $validated['status'] = $service->status ?? 'Unavailable';
         }
 
         $service->update($validated);

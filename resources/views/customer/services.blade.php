@@ -14,9 +14,9 @@
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-100">
                 <!-- Header with Service Name -->
                 <div class="bg-gray-50 p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3">
                         <h3 class="text-2xl font-bold text-primary-900">{{ $service->name }}</h3>
-                        <span class="inline-block px-4 py-2 bg-green-600 text-white text-xs font-bold rounded-full">Available</span>
+                        <span class="inline-block px-4 py-2 text-xs font-bold rounded-full {{ $service->getStatusBadgeClass() }}">{{ $service->status }}</span>
                     </div>
                 </div>
 
@@ -72,9 +72,15 @@
                     </div>
 
                     <!-- Request Service Button (opens modal) -->
-                    <button type="button" data-service-id="{{ $service->id }}" data-service-name="{{ $service->name }}" class="open-request-modal w-full bg-primary-900 hover:bg-primary-800 text-white font-bold py-3 px-6 rounded-lg transition">
-                        Request Service
-                    </button>
+                    @if($service->status === 'Available')
+                        <button type="button" data-service-id="{{ $service->id }}" data-service-name="{{ $service->name }}" class="open-request-modal w-full bg-primary-900 hover:bg-primary-800 text-white font-bold py-3 px-6 rounded-lg transition">
+                            Request Service
+                        </button>
+                    @else
+                        <button type="button" disabled class="w-full bg-gray-200 text-gray-500 font-medium py-3 px-6 rounded-lg" title="Service unavailable">
+                            Request Unavailable
+                        </button>
+                    @endif
                 </div>
             </div>
         @endforeach
