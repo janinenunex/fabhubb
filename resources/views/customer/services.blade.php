@@ -96,7 +96,7 @@
 @endif
 
 <!-- Request Service Modal -->
-<div id="requestServiceModal" class="fixed inset-0 hidden items-center justify-center bg-primary-900 bg-opacity-50 z-50">
+<div id="requestServiceModal" class="fixed inset-0 hidden items-center justify-center bg-white bg-opacity-60 backdrop-blur-md z-50" style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background-color: rgba(255,255,255,0.6);">
     <div class="w-full max-w-4xl mx-4">
         <div class="bg-white rounded-xl shadow-xl overflow-hidden">
             <div class="flex items-center justify-between p-6 border-b border-primary-800 bg-primary-900">
