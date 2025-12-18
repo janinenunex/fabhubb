@@ -163,8 +163,9 @@
             <!-- Right: Logo & Branding -->
             <div class="hidden md:flex w-full md:w-1/2 bg-white items-center justify-center p-8">
                 <div class="text-center">
-                    <img src="{{ asset('images/ctu-fablab-logo.png') }}" alt="CTU Danao FabLab Logo" class="w-48 mx-auto mb-6">
-                    <h2 class="text-3xl font-bold text-primary-900">CTU DANAO</h2>
+                    <div class="mb-8">
+                        <img src="{{ asset('images/fablab-logo.jpg') }}" alt="CTU Danao FabLab Logo" class="mx-auto mb-6" style="max-width: 280px; height: auto; object-fit: contain;">
+                    </div>
                 </div>
             </div>
         </div>
