@@ -71,10 +71,10 @@
                         @endif
                     </div>
 
-                    <!-- Request Service Button -->
-                    <a href="{{ route('customer.placeOrder', ['service' => $service->id]) }}" class="w-full bg-primary-900 hover:bg-primary-800 text-white font-bold py-3 px-6 rounded-lg transition text-center">
+                    <!-- Request Service Button (opens modal) -->
+                    <button type="button" data-service-id="{{ $service->id }}" data-service-name="{{ $service->name }}" class="open-request-modal w-full bg-primary-900 hover:bg-primary-800 text-white font-bold py-3 px-6 rounded-lg transition">
                         Request Service
-                    </a>
+                    </button>
                 </div>
             </div>
         @endforeach
@@ -88,4 +88,86 @@
         <p class="text-gray-600 text-lg">Check back soon for new services!</p>
     </div>
 @endif
+
+<!-- Request Service Modal -->
+<div id="requestServiceModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg w-full max-w-4xl mx-4 overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b">
+            <h3 id="modalTitle" class="text-lg font-semibold">Request Service</h3>
+            <button id="closeModal" class="text-gray-600 hover:text-gray-900">✕</button>
+        </div>
+
+        <form id="requestForm" method="POST" action="{{ route('customer.placeOrder') }}" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="service_id" id="modal_service_id" value="">
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium">Name</label>
+                    <input required name="name" value="{{ auth()->user()->name ?? '' }}" class="w-full border rounded px-3 py-2" />
+
+                    <label class="block text-sm font-medium">Email</label>
+                    <input required name="email" type="email" value="{{ auth()->user()->email ?? '' }}" class="w-full border rounded px-3 py-2" />
+
+                    <label class="block text-sm font-medium">Phone</label>
+                    <input required name="phone" class="w-full border rounded px-3 py-2" />
+
+                    <label class="block text-sm font-medium">Quantity</label>
+                    <input required name="quantity" type="number" min="1" value="1" class="w-24 border rounded px-3 py-2" />
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium">Upload Files</label>
+                    <input name="files[]" type="file" accept=".svg,.pdf,.png,.jpeg,.jpg" multiple class="w-full" />
+
+                    <label class="block text-sm font-medium">Notes (optional)</label>
+                    <textarea name="notes" rows="5" class="w-full border rounded px-3 py-2"></textarea>
+
+                    <div class="flex items-center justify-end gap-3 mt-2">
+                        <button type="button" id="modalCancel" class="px-4 py-2 border rounded">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-primary-900 text-white rounded">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    (function(){
+        const modal = document.getElementById('requestServiceModal');
+        const close = document.getElementById('closeModal');
+        const cancel = document.getElementById('modalCancel');
+        const modalServiceId = document.getElementById('modal_service_id');
+        const modalTitle = document.getElementById('modalTitle');
+
+        function openModal(serviceId, serviceName){
+            modalServiceId.value = serviceId;
+            modalTitle.textContent = 'Request ' + serviceName;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal(){
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.querySelectorAll('.open-request-modal').forEach(btn => {
+            btn.addEventListener('click', function(){
+                openModal(this.dataset.serviceId, this.dataset.serviceName);
+            });
+        });
+
+        close.addEventListener('click', closeModal);
+        cancel.addEventListener('click', closeModal);
+
+        // Close on backdrop click
+        modal.addEventListener('click', function(e){
+            if (e.target === modal) closeModal();
+        });
+    })();
+</script>
+@endpush
+
 @endsection

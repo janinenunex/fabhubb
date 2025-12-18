@@ -18,6 +18,8 @@ public function index(): View
     $pendingOrders = Order::where('status', 'Pending')->count();
     $completedOrders = Order::where('status', 'Completed')->count();
     $totalUsers = User::where('role', 'customer')->count();
+    $allServices = Service::all(); // or however your friend fetches all services
+    $recentUsers = User::latest()->limit(5)->get();
 
     $recentOrders = Order::with(['user', 'service'])
         ->latest()
@@ -78,6 +80,8 @@ public function index(): View
         'popularServices' => $popularServices,
         'orderDates' => $orderDates,
         'orderCounts' => $orderCounts,
+        'allServices' => $allServices,
+        'recentUsers' => $recentUsers,
     ]);
 }
 

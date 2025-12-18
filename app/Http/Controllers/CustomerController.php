@@ -34,14 +34,39 @@ class CustomerController extends Controller
         $validated = $request->validate([
             'service_id' => 'required|exists:services,id',
             'quantity' => 'required|integer|min:1',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:50',
+            'notes' => 'nullable|string',
+            'files.*' => 'nullable|file|mimes:svg,pdf,png,jpeg,jpg|max:10240',
         ]);
 
-        Order::create([
+        // Create the order first
+        $order = Order::create([
             'user_id' => auth()->id(),
             'service_id' => $validated['service_id'],
             'quantity' => $validated['quantity'],
             'status' => Order::STATUS_PENDING,
+            'contact_name' => $validated['name'],
+            'contact_email' => $validated['email'],
+            'contact_phone' => $validated['phone'],
+            'notes' => $validated['notes'] ?? null,
         ]);
+
+        // Handle uploaded files (optional)
+        if ($request->hasFile('files')) {
+            $stored = [];
+            foreach ($request->file('files') as $file) {
+                if ($file && $file->isValid()) {
+                    $stored[] = $file->store("orders/{$order->id}", 'public');
+                }
+            }
+
+            if (!empty($stored)) {
+                $order->files = $stored;
+                $order->save();
+            }
+        }
 
         return redirect()->route('customer.dashboard')->with('success', 'Order placed successfully!');
     }

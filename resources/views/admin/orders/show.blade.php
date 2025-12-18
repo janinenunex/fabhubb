@@ -22,6 +22,18 @@
                     <p class="text-primary-300 text-sm">Customer Email</p>
                     <p class="text-xl font-semibold">{{ $order->user->email }}</p>
                 </div>
+                    <div>
+                        <p class="text-primary-300 text-sm">Contact Name</p>
+                        <p class="text-xl font-semibold">{{ $order->contact_name ?? $order->user->name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-primary-300 text-sm">Contact Email</p>
+                        <p class="text-xl font-semibold">{{ $order->contact_email ?? $order->user->email }}</p>
+                    </div>
+                    <div>
+                        <p class="text-primary-300 text-sm">Contact Phone</p>
+                        <p class="text-xl font-semibold">{{ $order->contact_phone ?? '—' }}</p>
+                    </div>
                 <div>
                     <p class="text-primary-300 text-sm">Service</p>
                     <p class="text-xl font-semibold">{{ $order->service->name }}</p>
@@ -44,6 +56,24 @@
         <div class="bg-accent-50 rounded-lg shadow-lg p-8">
             <h2 class="text-2xl font-bold text-primary-900 mb-6">Service Details</h2>
             <p class="text-gray-700 text-lg leading-relaxed">{{ $order->service->description }}</p>
+
+            @if(!empty($order->notes))
+                <div class="mt-6">
+                    <h3 class="text-sm font-semibold text-primary-900 mb-2">Notes</h3>
+                    <p class="text-gray-700">{{ $order->notes }}</p>
+                </div>
+            @endif
+
+            @if(!empty($order->files) && is_array($order->files))
+                <div class="mt-6">
+                    <h3 class="text-sm font-semibold text-primary-900 mb-2">Uploaded Files</h3>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach($order->files as $file)
+                            <li><a target="_blank" rel="noopener" href="{{ asset('storage/' . $file) }}" class="text-accent-500 hover:underline">{{ basename($file) }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 

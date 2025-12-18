@@ -38,6 +38,31 @@
                         <p class="text-2xl font-bold text-accent-600">${{ number_format($order->getTotalPrice(), 2) }}</p>
                     </div>
                 </div>
+                
+                <div class="pt-6 border-t border-gray-200">
+                    <h3 class="text-sm font-semibold text-primary-900 mb-2">Contact Information</h3>
+                    <p class="text-gray-600 text-sm">Name: <span class="text-gray-800 font-medium">{{ $order->contact_name ?? $order->user->name }}</span></p>
+                    <p class="text-gray-600 text-sm">Email: <span class="text-gray-800 font-medium">{{ $order->contact_email ?? $order->user->email }}</span></p>
+                    <p class="text-gray-600 text-sm">Phone: <span class="text-gray-800 font-medium">{{ $order->contact_phone ?? '—' }}</span></p>
+                </div>
+
+                @if(!empty($order->notes))
+                    <div class="pt-4">
+                        <h3 class="text-sm font-semibold text-primary-900 mb-2">Notes</h3>
+                        <p class="text-gray-700">{{ $order->notes }}</p>
+                    </div>
+                @endif
+
+                @if(!empty($order->files) && is_array($order->files))
+                    <div class="pt-4">
+                        <h3 class="text-sm font-semibold text-primary-900 mb-2">Uploaded Files</h3>
+                        <ul class="list-disc pl-5 space-y-1">
+                            @foreach($order->files as $file)
+                                <li><a target="_blank" rel="noopener" href="{{ asset('storage/' . $file) }}" class="text-accent-500 hover:underline">{{ basename($file) }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
 

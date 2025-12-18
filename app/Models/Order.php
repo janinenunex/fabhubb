@@ -15,17 +15,23 @@ class Order extends Model
         'service_id',
         'quantity',
         'status',
+        'contact_name',
+        'contact_email',
+        'contact_phone',
+        'notes',
+        'files',
     ];
 
     protected $casts = [
         'quantity' => 'integer',
+        'files' => 'array',
     ];
 
     // === STEP 1: Define the 4 statuses ===
-    const STATUS_PENDING = 'Pending';
-    const STATUS_PROCESSING = 'Processing';
-    const STATUS_READY = 'Ready for Pickup';
-    const STATUS_COMPLETED = 'Completed';
+    const STATUS_PENDING = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_READY = 'ready_for_pickup';
+    const STATUS_COMPLETED = 'completed';
 
     // This is the correct order of statuses
     public static $statuses = [
